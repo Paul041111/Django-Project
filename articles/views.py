@@ -27,15 +27,15 @@ def detail(request, id):
 # ---------------- CREATE ----------------
 @login_required
 def create_article(request):
-    global ID
-
     if request.method == "POST":
-        ARTICLES.append({
-            "id": ID,
-            "title": request.POST["title"],
-            "content": request.POST["content"]
-        })
-        ID += 1
+        title = request.POST["title"]
+        content = request.POST["content"]
+
+        Article.objects.create(
+            title=title,
+            content=content,
+            author=request.user   # 👈 IMPORTANT
+        )
         return redirect("index")
 
     return render(request, "articles/create.html")
@@ -84,4 +84,32 @@ def signup(request):
 # ---------------- LOGOUT ----------------
 def logout_view(request):
     logout(request)
+    return redirect("index")
+
+#----------------- Edit ------------------
+
+@login_required
+def edit_article(request, id):
+    article = get_object_or_404(Article, id=id)
+
+    if article.author != request.user:
+        return redirect("index")
+
+    if request.method == "POST":
+        article.title = request.POST["title"]
+        article.content = request.POST["content"]
+        article.save()
+        return redirect("detail", id=article.id)
+
+    return render(request, "articles/edit.html", {"article": article})
+
+#----------------- Delete ------------------
+
+@login_required
+def delete_article(request, id):
+    article = get_object_or_404(Article, id=id)
+
+    if article.author == request.user:
+        article.delete()
+
     return redirect("index")
