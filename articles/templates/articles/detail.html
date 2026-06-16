@@ -2,13 +2,11 @@
 
 <p>{{ article.content }}</p>
 
-<p>Author: {{ article.author.username }}</p>
 
 <hr>
 
 {% if user == article.author %}
-
-<a href="{% url 'edit_article' article.id %}">Edit</a>
+<a href="{% url 'edit_article' article.pk %}">Edit</a>
 
 <form method="POST" action="{% url 'delete_article' article.id %}">
   {% csrf_token %}

@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from .models import Article
 
 # ---------------- MEMORY STORAGE ----------------
 ARTICLES = []
@@ -11,18 +11,17 @@ ID = 1
 
 
 # ---------------- HOME ----------------
-def index(request):
-    return render(request, "articles/index.html", {
-        "articles": ARTICLES,
-        "user": request.user
-    })
 
+def index(request):
+    articles = Article.objects.all()
+    return render(request, "articles/index.html", {"articles": articles})
 
 # ---------------- DETAIL ----------------
-def detail(request, id):
-    article = next((a for a in ARTICLES if a["id"] == id), None)
-    return render(request, "articles/detail.html", {"article": article})
+from django.shortcuts import get_object_or_404
 
+def detail(request, id):
+    article = get_object_or_404(Article, id=id)
+    return render(request, "articles/detail.html", {"article": article})
 
 # ---------------- CREATE ----------------
 @login_required
@@ -92,9 +91,6 @@ def logout_view(request):
 def edit_article(request, id):
     article = get_object_or_404(Article, id=id)
 
-    if article.author != request.user:
-        return redirect("index")
-
     if request.method == "POST":
         article.title = request.POST["title"]
         article.content = request.POST["content"]
@@ -109,7 +105,8 @@ def edit_article(request, id):
 def delete_article(request, id):
     article = get_object_or_404(Article, id=id)
 
-    if article.author == request.user:
+    if request.method == "POST":
         article.delete()
+        return redirect("index")
 
-    return redirect("index")
+    return render(request, "articles/delete.html", {"article": article})
