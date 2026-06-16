@@ -1,0 +1,13 @@
+<h1>Create Article</h1>
+
+<form method="POST">
+  {% csrf_token %}
+
+  <input type="text" name="title" placeholder="Title"><br><br>
+
+  <textarea name="content" placeholder="Content"></textarea><br><br>
+
+  <button type="submit">Save</button>
+</form>
+
+<a href="/">Back</a>

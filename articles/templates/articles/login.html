@@ -1,0 +1,14 @@
+<h1>Login</h1>
+
+{% if error %}
+<p style="color:red">{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+  {% csrf_token %}
+  <input name="username" placeholder="Username"><br><br>
+  <input name="password" type="password" placeholder="Password"><br><br>
+  <button>Login</button>
+</form>
+
+<a href="/signup/">Signup</a>
