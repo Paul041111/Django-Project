@@ -79,7 +79,8 @@ def signup(request):
         user.save()
 
         messages.success(request, "Account created successfully")
-        return render(request, "articles/login.html")
+        return redirect("login")
+
 # ---------------- LOGOUT ----------------
 def logout_view(request):
     logout(request)
