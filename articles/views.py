@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import User
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 
 # ---------------- MEMORY STORAGE ----------------
@@ -59,16 +60,26 @@ def login_view(request):
 
 # ---------------- SIGNUP ----------------
 def signup(request):
+    if request.method == "GET":
+        return render(request, "articles/signup.html")
+
     if request.method == "POST":
-        if not User.objects.filter(username=request.POST["username"]).exists():
-            User.objects.create_user(
-                username=request.POST["username"],
-                password=request.POST["password"]
-            )
-            return redirect("login")
-    return render(request, "articles/signup.html")
+        username = request.POST.get("username")
+        password = request.POST.get("password")
 
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return render(request, "articles/signup.html")
 
+        user = User.objects.create_user(
+            username=username,
+            password=password
+        )
+
+        user.save()
+
+        messages.success(request, "Account created successfully")
+        return render(request, "articles/login.html")
 # ---------------- LOGOUT ----------------
 def logout_view(request):
     logout(request)
