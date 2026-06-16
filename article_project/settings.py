@@ -1,7 +1,5 @@
 DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-SECRET_KEY = 'django-insecure-8x1q2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p0'
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,7 +20,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+SECRET_KEY="django-insecure-key"
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
